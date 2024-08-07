@@ -18,29 +18,3 @@ before_script:
 
 script:
   - sudo modprobe kvm
-  - docker run --privileged -e "DISPLAY=${DISPLAY}" -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev/snd:/dev/snd sickcodes/docker-osx:latest bash -c "\
-      qemu-system-x86_64 \
-      -m 4000 \
-      -cpu Penryn,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on,+ssse3,+sse4.2,+popcnt,+avx,+aes,+xsave,+xsaveopt,check \
-      -machine q35,accel=kvm:tcg \
-      -smp 4,cores=4 \
-      -usb \
-      -device usb-kbd \
-      -device usb-tablet \
-      -device 'isa-applesmc,osk=ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc' \
-      -drive if=pflash,format=raw,readonly=on,file=/home/arch/OSX-KVM/OVMF_CODE.fd \
-      -drive if=pflash,format=raw,file=/home/arch/OSX-KVM/OVMF_VARS-1024x768.fd \
-      -smbios type=2 \
-      -device ich9-intel-hda \
-      -device ich9-ahci,id=sata \
-      -drive id=OpenCoreBoot,if=none,snapshot=on,format=qcow2,file=/home/arch/OSX-KVM/OpenCore/OpenCore.qcow2 \
-      -device ide-hd,bus=sata.2,drive=OpenCoreBoot \
-      -device ide-hd,bus=sata.3,drive=InstallMedia \
-      -drive id=InstallMedia,if=none,file=/home/arch/OSX-KVM/BaseSystem.img,format=qcow2 \
-      -drive id=MacHDD,if=none,file=/home/arch/OSX-KVM/mac_hdd_ng.img,format=qcow2 \
-      -device ide-hd,bus=sata.4,drive=MacHDD \
-      -netdev user,id=net0,hostfwd=tcp::10022-:22,hostfwd=tcp::5900-:5900 \
-      -device vmxnet3,netdev=net0,id=net0,mac=52:54:00:09:49:17 \
-      -monitor stdio \
-      -boot menu=on \
-      -nographic"
