@@ -8,6 +8,7 @@ services:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y docker-ce
+  - sudo apt-get install -y qemu-system-x86 qemu-utils libasound2 alsa-utils pulseaudio
 
 install:
   - docker pull sickcodes/docker-osx:latest
@@ -19,6 +20,12 @@ before_script:
   - export QEMU_PA_SERVER=127.0.0.1
   - export QEMU_PA_CLIENT_NAME="QEMU"
   - export QEMU_PA_STREAM_NAME="QEMU"
+  - sudo Xvfb :99 -ac &
+  - pulseaudio --start
 
 script:
-  - docker run --privileged -e "DISPLAY=${DISPLAY}" -v /tmp/.X11-unix:/tmp/.X11-unix sickcodes/docker-osx:latest
+  - sudo modprobe kvm
+  - docker run --privileged -e "DISPLAY=${DISPLAY}" -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev/snd:/dev/snd sickcodes/docker-osx:latest
+
+after_success:
+  - echo "Build succeeded!"
