@@ -18,10 +18,7 @@ before_script:
 
 script:
   - sudo modprobe kvm
-  - docker run --privileged sickcodes/docker-osx:latest \
-      -nographic \
-      -v /tmp/.X11-unix:/tmp/.X11-unix \
-      -v /dev/snd:/dev/snd \
+  - docker run --privileged -e "DISPLAY=${DISPLAY}" -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev/snd:/dev/snd sickcodes/docker-osx:latest bash -c "\
       qemu-system-x86_64 \
       -m 4000 \
       -cpu Penryn,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on,+ssse3,+sse4.2,+popcnt,+avx,+aes,+xsave,+xsaveopt,check \
@@ -45,4 +42,5 @@ script:
       -netdev user,id=net0,hostfwd=tcp::10022-:22,hostfwd=tcp::5900-:5900 \
       -device vmxnet3,netdev=net0,id=net0,mac=52:54:00:09:49:17 \
       -monitor stdio \
-      -boot menu=on
+      -boot menu=on \
+      -nographic"
