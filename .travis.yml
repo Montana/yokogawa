@@ -19,3 +19,4 @@ before_script:
 script:
   - sudo modprobe kvm
   - echo "yokogawa" 
+  - echo "yokogawa worldwide"
